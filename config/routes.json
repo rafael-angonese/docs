@@ -11,6 +11,12 @@
           "title": "Introduction",
           "keywords": "introduction",
           "path": "/docs/getting-started/introduction.mdx"
+        },
+        {
+          "key": "installation",
+          "title": "Installation",
+          "keywords": "installation, start",
+          "path": "/docs/getting-started/installation.mdx"
         }
       ]
     },
