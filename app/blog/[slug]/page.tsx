@@ -2,7 +2,7 @@ import type {Metadata} from "next";
 
 import {notFound} from "next/navigation";
 import {allBlogPosts} from "contentlayer/generated";
-import {Link, User} from "@nextui-org/react";
+// import {Link, User} from "@nextui-org/react";
 import {format, parseISO} from "date-fns";
 import NextLink from "next/link";
 import {Balancer} from "react-wrap-balancer";
@@ -88,7 +88,7 @@ export default async function DocPage({params}: BlogPostProps) {
   return (
     <div className="w-full mt-12 flex flex-col justify-start items-center prose prose-neutral">
       <div className="w-full max-w-4xl">
-        <Link
+        {/* <Link
           isBlock
           as={NextLink}
           className="mb-8 -ml-3 text-default-500 hover:text-default-900"
@@ -98,13 +98,13 @@ export default async function DocPage({params}: BlogPostProps) {
         >
           <ChevronRightLinearIcon className="rotate-180 inline-block mr-1" size={15} />
           Back to blog
-        </Link>
+        </Link> */}
 
         <time className="block text-small mb-2 text-default-500" dateTime={post.date}>
           {format(parseISO(post.date), "LLLL d, yyyy")}
         </time>
         <div className="mb-3 flex w-full flex-col items-start">
-          <User
+          {/* <User
             isExternal
             as={Link}
             avatarProps={{
@@ -119,7 +119,7 @@ export default async function DocPage({params}: BlogPostProps) {
             description={post.author?.username}
             href={post.author?.link}
             name={post.author?.name}
-          />
+          /> */}
         </div>
         <h1 className="mb-2 font-bold text-4xl">
           <Balancer>{post.title}</Balancer>
