@@ -1,6 +1,20 @@
 {
   "routes": [
     {
+      "key": "getting-started",
+      "title": "Getting Started",
+      "defaultOpen": true,
+      "keywords": "getting started, guide, start",
+      "routes": [
+        {
+          "key": "introduction",
+          "title": "Introduction",
+          "keywords": "introduction",
+          "path": "/docs/getting-started/introduction.mdx"
+        }
+      ]
+    },
+    {
       "key": "guide",
       "title": "Guide",
       "defaultOpen": true,
