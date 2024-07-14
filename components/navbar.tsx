@@ -1,45 +1,36 @@
 "use client";
 
-import {useRef, useState, FC, ReactNode, Key} from "react";
 import {
+  Button,
+  Chip,
+  Kbd,
   link,
-  Navbar as NextUINavbar,
+  Link,
+  NavbarBrand,
   NavbarContent,
+  NavbarItem,
   NavbarMenu,
   NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  Link,
-  Button,
-  Kbd,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  DropdownTrigger,
-  Chip,
+  Navbar as NextUINavbar,
 } from "@nextui-org/react";
-import {dataFocusVisibleClasses} from "@nextui-org/theme";
-import {ChevronDownIcon, LinkIcon} from "@nextui-org/shared-icons";
-import {isAppleDevice} from "@react-aria/utils";
-import {clsx} from "@nextui-org/shared-utils";
+import { clsx } from "@nextui-org/shared-utils";
+import { dataFocusVisibleClasses } from "@nextui-org/theme";
+import { useFocusRing } from "@react-aria/focus";
+import { usePress } from "@react-aria/interactions";
+import { isAppleDevice } from "@react-aria/utils";
+import { includes } from "lodash";
 import NextLink from "next/link";
-import {usePathname} from "next/navigation";
-import {includes} from "lodash";
-import {motion, AnimatePresence} from "framer-motion";
-import {useEffect} from "react";
-import {usePress} from "@react-aria/interactions";
-import {useFocusRing} from "@react-aria/focus";
+import { usePathname } from "next/navigation";
+import { FC, ReactNode, useEffect, useRef, useState } from "react";
 
-import {currentVersion} from "@/utils/version";
-import {siteConfig} from "@/config/site";
-import {Route} from "@/libs/docs/page";
-import {LargeLogo, SmallLogo, ThemeSwitch} from "@/components";
-import {TwitterIcon, GithubIcon, DiscordIcon, SearchLinearIcon} from "@/components/icons";
-import {useIsMounted} from "@/hooks/use-is-mounted";
-import {DocsSidebar} from "@/components/docs/sidebar";
-import {useCmdkStore} from "@/components/cmdk";
-import {FbRoadmapLink} from "@/components/featurebase/fb-roadmap-link";
-import {trackEvent} from "@/utils/va";
+import { LargeLogo, SmallLogo, ThemeSwitch } from "@/components";
+import { useCmdkStore } from "@/components/cmdk";
+import { DocsSidebar } from "@/components/docs/sidebar";
+import { FbRoadmapLink } from "@/components/featurebase/fb-roadmap-link";
+import { GithubIcon, HeartFilledIcon, SearchLinearIcon } from "@/components/icons";
+import { siteConfig } from "@/config/site";
+import { Route } from "@/libs/docs/page";
+import { trackEvent } from "@/utils/va";
 
 export interface NavbarProps {
   routes: Route[];
@@ -54,7 +45,6 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
   const [commandKey, setCommandKey] = useState<"ctrl" | "command">("command");
 
   const ref = useRef<HTMLElement>(null);
-  const isMounted = useIsMounted();
 
   const pathname = usePathname();
 
@@ -118,14 +108,6 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
 
   const navLinkClasses = clsx(link({color: "foreground"}), "data-[active=true]:text-primary");
 
-  const handleVersionChange = (key: Key) => {
-    if (key === "v1") {
-      const newWindow = window.open("https://v1.nextui.org", "_blank", "noopener,noreferrer");
-
-      if (newWindow) newWindow.opener = null;
-    }
-  };
-
   const handlePressNavbarItem = (name: string, url: string) => {
     trackEvent("NavbarItem", {
       name,
@@ -157,40 +139,6 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
             <SmallLogo className="w-6 h-6 md:hidden" />
             <LargeLogo className="h-5 md:h-6" />
           </NextLink>
-          {ref.current ? (
-            <Dropdown placement="bottom-start" portalContainer={ref.current}>
-              <AnimatePresence>
-                {isMounted && (
-                  <motion.div animate={{opacity: 1}} exit={{opacity: 0}} initial={{opacity: 0}}>
-                    <DropdownTrigger>
-                      <Button
-                        className="hidden text-xs h-6 w-[74px] py-1 min-w-fit sm:flex gap-0.5 bg-default-400/20 dark:bg-default-500/20"
-                        endContent={<ChevronDownIcon className="text-tiny" />}
-                        radius="full"
-                        size="sm"
-                        variant="flat"
-                      >
-                        v{currentVersion}
-                      </Button>
-                    </DropdownTrigger>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <DropdownMenu
-                aria-label="NextUI versions"
-                defaultSelectedKeys={["v2"]}
-                selectionMode="single"
-                onAction={handleVersionChange}
-              >
-                <DropdownItem key="v2">v{currentVersion}</DropdownItem>
-                <DropdownItem key="v1" endContent={<LinkIcon />}>
-                  v1.0.0
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          ) : (
-            <div className="w-[74px]" />
-          )}
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start items-center">
           <NavbarItem>
@@ -237,17 +185,6 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
               Figma
             </NextLink>
           </NavbarItem>
-          {/* hide feedback and changelog at this moment */}
-          {/* <NavbarItem>
-            <NextLink className={navLinkClasses} color="foreground" href="#">
-              <FbChangelogButton key="changelog" userName="" />
-            </NextLink>
-          </NavbarItem>
-          <NavbarItem>
-            <NextLink className={navLinkClasses} color="foreground" href="#">
-              <FbFeedbackButton key="feedback" userEmail="" />
-            </NextLink>
-          </NavbarItem> */}
           <NavbarItem>
             <FbRoadmapLink className={navLinkClasses} />
           </NavbarItem>
@@ -307,7 +244,7 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
-        <NavbarItem className="hidden sm:flex">
+        {/* <NavbarItem className="hidden sm:flex">
           <Chip
             as={NextLink}
             className="bg-default-100/50 hover:bg-default-100 border-default-200/80 dark:border-default-100/80 transition-colors cursor-pointer"
@@ -321,26 +258,8 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
               🚀
             </span>
           </Chip>
-        </NavbarItem>
+        </NavbarItem> */}
         <NavbarItem className="hidden sm:flex">
-          <Link
-            isExternal
-            aria-label="Twitter"
-            className="p-1"
-            href={siteConfig.links.twitter}
-            onPress={() => handlePressNavbarItem("Twitter", siteConfig.links.twitter)}
-          >
-            <TwitterIcon className="text-default-600 dark:text-default-500" />
-          </Link>
-          <Link
-            isExternal
-            aria-label="Discord"
-            className="p-1"
-            href={siteConfig.links.discord}
-            onPress={() => handlePressNavbarItem("Discord", siteConfig.links.discord)}
-          >
-            <DiscordIcon className="text-default-600 dark:text-default-500" />
-          </Link>
           <Link
             isExternal
             aria-label="Github"
@@ -353,7 +272,7 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchButton}</NavbarItem>
-        {/* <NavbarItem className="hidden md:flex">
+        <NavbarItem className="hidden md:flex">
           <Button
             isExternal
             as={Link}
@@ -367,7 +286,7 @@ export const Navbar: FC<NavbarProps> = ({children, routes, mobileRoutes = [], sl
           >
             Sponsor
           </Button>
-        </NavbarItem> */}
+        </NavbarItem>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="hidden sm:flex lg:hidden ml-4"
