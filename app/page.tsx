@@ -1,7 +1,3 @@
-// "use client"
-
-// import {Spacer} from "@nextui-org/spacer";
-
 import {Hero} from "@/components/marketing/hero";
 import {FeaturesGrid} from "@/components/marketing/features-grid";
 import {CustomThemes} from "@/components/marketing/custom-themes";
